@@ -4,7 +4,6 @@ services:
     image: postgres:15
     container_name: postgres
     ports:
-    - "5432:5432"
     - "9999:9999"
     environment:
     - POSTGRES_DB=postgres
