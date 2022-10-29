@@ -1,20 +1,25 @@
 # pylint: disable=C0114
 import psycopg2
+import os
+
 
 secrets = []
-with open("env_variables", encoding='utf-8') as f:
-    for i in f:
-        secrets.append(i.replace('\n','').split('=')[1])
+database = os.environ['database']
+user = os.environ['user']
+password = os.environ['password']
 
 conn = psycopg2.connect(
-    host="postgres",#good with containter name or "host.docker.internal" locally,
-                    # reconsider in case of clustring/cloud
-    database=secrets[0],
-    user=secrets[1],
-    password=secrets[2])
+    host="postgres",
+    database=database,
+    user=user,
+    password=password)
 
-cur = conn.cursor()
-
-cur.execute('create table test (value integer)')
-conn.commit()
-conn.close()
+try:
+    cur = conn.cursor()
+    cur.execute('create table test (value integer)')
+    conn.commit()
+    conn.close()
+    print('SUCCESS')
+except:
+    print("YOU'VE DUN GOOFED")
+    raise
