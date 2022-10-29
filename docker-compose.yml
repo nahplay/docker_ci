@@ -4,17 +4,25 @@ services:
     image: postgres:15
     container_name: postgres
     ports:
-      - "5432:5432"
-    env_file:
-      - env_variables
+    - "5432:5432"
+    - "9999:9999"
+    environment:
+    - POSTGRES_DB=postgres
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    - PGDATA=/PGDATA
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+    - ./postgres-data:/PGDATA
 
   python:
-    image: python:3.8
+    build:
+      ./python
     container_name: python
     volumes:
-      - ./python:/home/
-      - ./env_variables:/home/env_variables
-      - ./python.sh:/python.sh
+      - ./python:/app
+    environment:
+      - database=postgres
+      - user=postgres
+      - password=postgres
+    entrypoint: bash
     tty: true
